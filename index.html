@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>وين إجازتك؟ 🌴</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap');
+:root{
+  --d1:#0d1b2a;--d2:#1b3a5c;--d3:#c1440e;--d4:#f4813a;--d5:#f9c76b;--d6:#fde9b0;
+  --muted:#c9a96e;--text:#fef3e2;--border:rgba(255,255,255,0.11);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Tajawal',sans-serif;background:var(--d1);color:var(--text);overflow-x:hidden;min-height:100vh;}
+.sky{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 120% 55% at 50% 100%,#c1440e44 0%,transparent 60%),
+    radial-gradient(ellipse 80% 40% at 80% 90%,#f4813a33 0%,transparent 50%),
+    linear-gradient(to bottom,#0d1b2a 0%,#1b3a5c 55%,#3a1a0a 100%);}
+.sky::before{content:'';position:absolute;inset:0;background-image:
+    radial-gradient(1px 1px at 12% 8%,rgba(255,255,255,.8),transparent),
+    radial-gradient(1.5px 1.5px at 54% 12%,rgba(255,255,255,.9),transparent),
+    radial-gradient(1px 1px at 73% 7%,rgba(255,255,255,.6),transparent),
+    radial-gradient(1px 1px at 33% 5%,rgba(255,255,255,.5),transparent),
+    radial-gradient(1px 1px at 88% 18%,rgba(255,255,255,.4),transparent),
+    radial-gradient(1px 1px at 6% 22%,rgba(255,255,255,.6),transparent),
+    radial-gradient(1px 1px at 63% 20%,rgba(255,255,255,.7),transparent);}
+.sky::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:400px;height:200px;
+  background:radial-gradient(ellipse at 50% 100%,#f9c76b55 0%,#f4813a33 40%,transparent 70%);
+  animation:sp 4s ease-in-out infinite;}
+@keyframes sp{0%,100%{opacity:.8}50%{opacity:1}}
+.page{position:relative;z-index:1;}
+.hero{text-align:center;padding:48px 20px 28px;}
+.hero-sun{width:60px;height:60px;margin:0 auto 16px;
+  background:radial-gradient(circle at 40% 35%,#fde9b0,#f9c76b 40%,#f4813a 75%,#c1440e);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;
+  box-shadow:0 0 0 10px rgba(249,199,107,.1),0 0 55px rgba(244,129,58,.5);
+  animation:hs 5s ease-in-out infinite;}
+@keyframes hs{0%,100%{box-shadow:0 0 0 10px rgba(249,199,107,.1),0 0 55px rgba(244,129,58,.5)}50%{box-shadow:0 0 0 16px rgba(249,199,107,.14),0 0 85px rgba(244,129,58,.65)}}
+.eyebrow{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--d5);opacity:.7;margin-bottom:7px;}
+.hero h1{font-size:clamp(2rem,7vw,3.4rem);font-weight:900;line-height:1.12;
+  background:linear-gradient(170deg,var(--d6) 0%,var(--d5) 40%,var(--d4) 80%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;}
+.hero-sub{color:var(--muted);font-size:.88rem;line-height:1.7;}
+.waveline{margin-top:16px;display:flex;justify-content:center;}
+.waveline svg{width:100%;max-width:360px;height:20px;opacity:.3;}
+/* LOADING */
+.loading{text-align:center;padding:60px 20px;color:var(--muted);}
+.spinner{width:36px;height:36px;border:3px solid rgba(249,199,107,.2);border-top-color:var(--d5);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* CHIPS */
+.chips-outer{padding:0 14px;max-width:1100px;margin:0 auto 14px;}
+.chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none;}
+.chips::-webkit-scrollbar{display:none;}
+.chip{flex-shrink:0;padding:7px 16px;border-radius:20px;border:1.5px solid rgba(255,255,255,.12);
+  background:transparent;color:var(--muted);font-family:'Tajawal',sans-serif;font-size:.8rem;cursor:pointer;transition:all .2s;}
+.chip.on{border-color:var(--d5);color:var(--d5);background:rgba(249,199,107,.1);}
+/* STATS */
+.stats{display:flex;justify-content:center;gap:28px;margin:16px 0 8px;flex-wrap:wrap;}
+.stat{text-align:center;}
+.stat-n{font-size:1.5rem;font-weight:900;color:var(--d5);line-height:1;}
+.stat-l{font-size:.7rem;color:var(--muted);margin-top:2px;}
+.horizon{width:100%;height:1px;background:linear-gradient(to left,transparent,rgba(249,199,107,.3),rgba(244,129,58,.4),rgba(249,199,107,.3),transparent);margin:4px 0 20px;}
+/* PADLET GRID */
+.padlet-outer{padding:0 10px 110px;max-width:1200px;margin:0 auto;}
+.padlet-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+@media(min-width:540px){.padlet-grid{grid-template-columns:repeat(3,1fr);}}
+@media(min-width:800px){.padlet-grid{grid-template-columns:repeat(4,1fr);}}
+@media(min-width:1100px){.padlet-grid{grid-template-columns:repeat(5,1fr);}}
+/* CARD */
+.pcard{background:#fff;border-radius:12px;overflow:hidden;
+  box-shadow:0 4px 14px rgba(0,0,0,.28);transition:transform .25s,box-shadow .25s;cursor:pointer;position:relative;}
+.pcard:nth-child(6n+1){transform:rotate(-1.8deg);}
+.pcard:nth-child(6n+2){transform:rotate(1.2deg);}
+.pcard:nth-child(6n+3){transform:rotate(-.7deg);}
+.pcard:nth-child(6n+4){transform:rotate(2deg);}
+.pcard:nth-child(6n+5){transform:rotate(-1.3deg);}
+.pcard:nth-child(6n){transform:rotate(.5deg);}
+.pcard:hover{transform:rotate(0deg) translateY(-6px) scale(1.03)!important;box-shadow:0 14px 36px rgba(0,0,0,.4);}
+.pin{position:absolute;top:-7px;left:50%;transform:translateX(-50%);width:14px;height:14px;border-radius:50%;z-index:2;box-shadow:0 2px 6px rgba(0,0,0,.4);}
+.pcard-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;}
+.pcard:nth-child(5n+2) .pcard-img{aspect-ratio:1/1;}
+.pcard:nth-child(4n+3) .pcard-img{aspect-ratio:3/4;}
+.mode-badge{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.45);backdrop-filter:blur(3px);border-radius:20px;padding:2px 8px;font-size:.65rem;color:#fde9b0;}
+.pcard-body{padding:9px 11px 12px;background:#fff;}
+.pcard-name{font-size:.78rem;font-weight:700;color:#7a4010;margin-bottom:3px;display:flex;align-items:center;gap:4px;}
+.pcard-name .dot{width:5px;height:5px;border-radius:50%;background:var(--d4);flex-shrink:0;}
+.pcard-wish{font-size:.74rem;color:#5a3a1a;line-height:1.5;margin-bottom:7px;}
+.pcard-foot{display:flex;justify-content:space-between;align-items:center;}
+.pcard-tag{font-size:.67rem;padding:2px 7px;border-radius:6px;font-weight:600;background:rgba(193,68,14,.1);color:#c1440e;}
+.pcard-like{background:none;border:none;cursor:pointer;font-size:.78rem;color:#c0a080;display:flex;align-items:center;gap:2px;padding:2px 6px;border-radius:6px;transition:all .2s;font-family:'Tajawal',sans-serif;}
+.pcard-like:hover,.pcard-like.on{color:#c1440e;background:rgba(193,68,14,.08);}
+/* EMPTY */
+.empty{text-align:center;padding:50px 20px;color:var(--muted);grid-column:1/-1;}
+/* FAB */
+.fab{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;
+  padding:14px 30px;background:linear-gradient(135deg,var(--d3),var(--d5));
+  border:none;border-radius:50px;font-family:'Tajawal',sans-serif;font-size:1rem;font-weight:700;
+  color:#1a0a00;cursor:pointer;box-shadow:0 8px 32px rgba(193,68,14,.5);transition:all .3s;
+  display:flex;align-items:center;gap:8px;}
+.fab:hover{transform:translateX(-50%) translateY(-3px);box-shadow:0 14px 40px rgba(193,68,14,.65);}
+/* MODAL */
+.modal-bg{position:fixed;inset:0;z-index:200;background:rgba(5,10,18,.85);backdrop-filter:blur(6px);
+  display:none;align-items:flex-end;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:linear-gradient(170deg,#1c2e42,#0f1e2d);border:1px solid rgba(255,255,255,.13);
+  border-radius:28px 28px 0 0;width:100%;max-width:540px;max-height:92vh;overflow-y:auto;
+  padding:22px 18px 40px;animation:slide-up .35s cubic-bezier(.32,1.2,.6,1);position:relative;}
+@keyframes slide-up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:38px;height:4px;background:rgba(255,255,255,.18);border-radius:2px;margin:0 auto 18px;}
+.modal-close{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.08);border:none;
+  color:var(--text);width:30px;height:30px;border-radius:50%;font-size:15px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;}
+/* MTABS */
+.mtabs{display:flex;gap:0;margin-bottom:18px;background:rgba(255,255,255,.05);border-radius:12px;padding:4px;}
+.mtab{flex:1;padding:9px 5px;border:none;background:transparent;color:var(--muted);
+  font-family:'Tajawal',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;border-radius:9px;transition:all .2s;}
+.mtab.active{background:rgba(249,199,107,.15);color:var(--d5);}
+/* FORM */
+.fg{margin-bottom:13px;}
+.fg label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:5px;}
+.fg input[type=text],.fg textarea,.fg select{width:100%;background:rgba(255,255,255,.06);
+  border:1.5px solid rgba(255,255,255,.1);border-radius:11px;padding:10px 13px;color:var(--text);
+  font-family:'Tajawal',sans-serif;font-size:.92rem;outline:none;transition:border-color .2s;resize:none;text-align:right;}
+.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--d5);}
+.fg select option{background:#1c2e42;}
+/* DZ */
+.dz{border:2px dashed rgba(249,199,107,.3);border-radius:13px;padding:26px 14px;text-align:center;
+  cursor:pointer;transition:all .3s;background:rgba(249,199,107,.03);position:relative;}
+.dz:hover,.dz.over{border-color:var(--d5);background:rgba(249,199,107,.07);}
+.dz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.dz p{color:var(--muted);font-size:.86rem;line-height:1.6;}
+.dz strong{color:var(--d5);}
+#pv-wrap{margin-top:10px;display:none;position:relative;}
+#pv-wrap img{width:100%;max-height:180px;object-fit:cover;border-radius:11px;}
+.rm-btn{position:absolute;top:7px;left:7px;background:rgba(0,0,0,.7);border:none;color:#fff;
+  border-radius:50%;width:26px;height:26px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+/* CAM */
+.cam-wrap{border-radius:13px;overflow:hidden;background:#000;aspect-ratio:4/3;position:relative;}
+#cam-video{width:100%;height:100%;object-fit:cover;display:block;transform:scaleX(-1);}
+#cam-snap{display:none;width:100%;height:100%;object-fit:cover;}
+#cam-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);}
+#cam-overlay p{color:#fff;text-align:center;font-size:.9rem;padding:14px;}
+.cam-ctrls{display:flex;gap:8px;margin-top:9px;justify-content:center;flex-wrap:wrap;}
+.cbtn{padding:9px 16px;border:none;border-radius:11px;font-family:'Tajawal',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:5px;}
+.cbtn.p{background:linear-gradient(135deg,var(--d3),var(--d5));color:#1a0a00;}
+.cbtn.s{background:rgba(255,255,255,.1);color:var(--text);border:1px solid rgba(255,255,255,.15);}
+/* CANVAS */
+.ctoolbar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;align-items:center;}
+.colorbtn{width:23px;height:23px;border-radius:50%;border:2px solid transparent;cursor:pointer;flex-shrink:0;transition:transform .15s;}
+.colorbtn.on{border-color:#fff;transform:scale(1.3);}
+.sbtn{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);color:var(--text);border-radius:7px;padding:3px 8px;font-family:'Tajawal',sans-serif;font-size:.75rem;cursor:pointer;}
+.sbtn.on{background:rgba(249,199,107,.2);border-color:var(--d5);}
+.tbtn{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.15);color:var(--text);border-radius:8px;padding:5px 10px;font-family:'Tajawal',sans-serif;font-size:.78rem;cursor:pointer;transition:all .2s;}
+.tbtn.on{background:rgba(249,199,107,.2);border-color:var(--d5);color:var(--d5);}
+.canvas-shell{border-radius:13px;overflow:hidden;border:1.5px solid rgba(255,255,255,.12);touch-action:none;}
+#draw-canvas{display:block;width:100%;touch-action:none;}
+.txt-row{display:flex;gap:7px;margin-top:8px;}
+.txt-row input{flex:1;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;padding:8px 11px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:.88rem;outline:none;text-align:right;}
+.txt-row input:focus{border-color:var(--d5);}
+.tadd{padding:8px 12px;background:rgba(249,199,107,.12);border:1.5px solid rgba(249,199,107,.4);border-radius:10px;color:var(--d5);font-family:'Tajawal',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap;}
+/* SUBMIT */
+.bsubmit{width:100%;padding:14px;margin-top:6px;
+  background:linear-gradient(135deg,var(--d3) 0%,var(--d4) 50%,var(--d5) 100%);
+  border:none;border-radius:13px;color:#1a0a00;font-family:'Tajawal',sans-serif;
+  font-size:1rem;font-weight:700;cursor:pointer;transition:all .3s;
+  box-shadow:0 6px 20px rgba(193,68,14,.35);}
+.bsubmit:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(193,68,14,.5);}
+.bsubmit:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+/* TOAST */
+.toast{position:fixed;bottom:86px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:linear-gradient(135deg,#c1440e,#f4813a);color:#fff;padding:10px 22px;
+  border-radius:50px;font-family:'Tajawal',sans-serif;font-size:.88rem;font-weight:600;
+  z-index:9999;opacity:0;transition:all .4s cubic-bezier(.34,1.4,.64,1);pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.mhdr{text-align:center;margin-bottom:18px;padding:0 6px;}
+.mhdr h2{font-size:1.35rem;font-weight:800;color:var(--d6);margin-bottom:3px;}
+.mhdr p{color:var(--muted);font-size:.85rem;}
+.mhdr b{color:var(--d5);}
+/* GOAL BAR */
+.goal-wrap{background:rgba(255,255,255,.05);border:1px solid rgba(249,199,107,.2);border-radius:16px;padding:14px 18px;margin:16px 0 4px;}
+.goal-label{font-size:.88rem;color:var(--d6);font-weight:600;margin-bottom:10px;}
+.goal-label b{color:var(--d5);}
+.goal-track{background:rgba(255,255,255,.1);border-radius:50px;height:10px;overflow:hidden;}
+.goal-fill{height:100%;background:linear-gradient(90deg,var(--d3),var(--d4),var(--d5));border-radius:50px;transition:width 1s cubic-bezier(.34,1.2,.64,1);min-width:0%;}
+.goal-sub{font-size:.75rem;color:var(--muted);margin-top:6px;text-align:center;}
+/* REACTIONS */
+.react-row{display:flex;gap:6px;margin-top:7px;}
+.rbtn{background:none;border:1.5px solid rgba(255,255,255,.12);border-radius:20px;
+  padding:4px 10px;font-family:'Tajawal',sans-serif;font-size:.72rem;cursor:pointer;
+  color:rgba(254,243,226,.5);transition:all .2s;display:flex;align-items:center;gap:3px;white-space:nowrap;}
+.rbtn:hover{border-color:var(--d5);color:var(--d5);background:rgba(249,199,107,.08);}
+.rbtn.on{border-color:var(--d4);color:var(--d4);background:rgba(244,129,58,.1);}
+.rbtn.on-star{border-color:#f9c76b;color:#f9c76b;background:rgba(249,199,107,.1);}
+.rbtn.on-clap{border-color:#10b981;color:#10b981;background:rgba(16,185,129,.1);}
+
+
+/* ADMIN */
+.adm-fab{position:fixed;bottom:24px;right:16px;z-index:100;width:44px;height:44px;
+  background:rgba(30,30,50,.85);border:1.5px solid rgba(255,255,255,.2);border-radius:50%;
+  font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);transition:all .3s;}
+.adm-fab:hover{background:rgba(193,68,14,.5);border-color:#f4813a;}
+.adm-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.92);
+  backdrop-filter:blur(10px);display:none;flex-direction:column;overflow:hidden;}
+.adm-overlay.show{display:flex;}
+.adm-top{background:linear-gradient(135deg,#1a0a00,#2d1500);padding:14px 18px;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+  border-bottom:1px solid rgba(249,199,107,.2);}
+.adm-top h2{font-size:.95rem;font-weight:700;color:#f9c76b;display:flex;align-items:center;gap:7px;}
+.adm-xbtn{background:rgba(255,255,255,.1);border:none;color:white;width:32px;height:32px;
+  border-radius:50%;font-size:16px;cursor:pointer;font-family:'Tajawal',sans-serif;}
+.adm-body{flex:1;overflow-y:auto;padding:16px;}
+/* LOGIN */
+.adm-login{max-width:300px;margin:60px auto;text-align:center;}
+.adm-login .icon{font-size:3rem;margin-bottom:12px;}
+.adm-login p{color:#c9a96e;font-size:.85rem;margin-bottom:14px;}
+.adm-login input{width:100%;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.2);
+  border-radius:12px;padding:12px;color:white;font-family:'Tajawal',sans-serif;font-size:1rem;
+  outline:none;text-align:center;letter-spacing:.1em;margin-bottom:10px;}
+.adm-login input:focus{border-color:#f9c76b;}
+.adm-login-btn{width:100%;padding:12px;background:linear-gradient(135deg,#c1440e,#f9c76b);
+  border:none;border-radius:12px;color:#1a0a00;font-family:'Tajawal',sans-serif;
+  font-size:1rem;font-weight:700;cursor:pointer;}
+.adm-err{color:#ef4444;font-size:.82rem;margin-top:6px;display:none;}
+/* DASHBOARD */
+.adm-dash{display:none;}
+.adm-bar{display:flex;gap:14px;flex-wrap:wrap;background:rgba(249,199,107,.06);
+  border:1px solid rgba(249,199,107,.15);border-radius:12px;padding:12px 16px;margin-bottom:14px;}
+.adm-stat{font-size:.82rem;color:#c9a96e;}
+.adm-stat b{color:#f9c76b;}
+.adm-toggle{display:flex;align-items:center;gap:10px;margin-bottom:14px;
+  background:rgba(255,255,255,.04);border-radius:10px;padding:10px 14px;}
+.adm-toggle-lbl{font-size:.82rem;color:#c9a96e;flex:1;}
+.sw{position:relative;width:46px;height:26px;flex-shrink:0;}
+.sw input{opacity:0;width:0;height:0;}
+.sw-sl{position:absolute;inset:0;background:rgba(255,255,255,.15);border-radius:13px;transition:.3s;cursor:pointer;}
+.sw-sl:before{content:'';position:absolute;height:20px;width:20px;left:3px;bottom:3px;
+  background:white;border-radius:50%;transition:.3s;}
+.sw input:checked+.sw-sl{background:#10b981;}
+.sw input:checked+.sw-sl:before{transform:translateX(20px);}
+.adm-list{display:flex;flex-direction:column;gap:10px;}
+.adm-row{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;}
+.adm-row-info{flex:1;min-width:0;}
+.adm-row-name{font-size:.85rem;font-weight:700;color:#f9c76b;margin-bottom:2px;}
+.adm-row-wish{font-size:.75rem;color:rgba(255,255,255,.55);line-height:1.4;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.adm-row-meta{font-size:.68rem;color:#c9a96e;margin-top:3px;}
+.adm-view{background:rgba(78,181,241,.15);border:1px solid rgba(78,181,241,.3);
+  color:#4eb5f1;border-radius:8px;padding:5px 10px;font-size:.75rem;font-family:'Tajawal',sans-serif;
+  cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.adm-del{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);
+  color:#ef4444;border-radius:8px;padding:5px 10px;font-size:.75rem;font-family:'Tajawal',sans-serif;
+  cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.adm-del:hover{background:rgba(239,68,68,.3);}
+.adm-empty{text-align:center;padding:40px;color:#c9a96e;font-size:.9rem;}
+</style>
+</head>
+<body>
+<div class="sky"></div>
+<div class="page">
+<div class="hero">
+  <div class="hero-sun">☀️</div>
+  <div class="eyebrow">مجتمع أفق الجامعي | صيف 2026</div>
+  <h1>وين<br>إجازتك؟ 🌴</h1>
+  <p class="hero-sub">صورة، رسمة، أو عبارة تعبّر عن شيء تتمنى أن تعيشه أو تحققه خلال الإجازة الصيفية ✨<br>شاركنا بصمتك، ولنصنع معًا جدارية إجازة لا تُنسى</p>
+  <div class="waveline"><svg viewBox="0 0 360 20"><path d="M0 10 C45 3 90 17 135 10 S225 3 270 10 S315 17 360 10" stroke="#f9c76b" stroke-width="1.5" fill="none"/><path d="M0 16 C55 8 110 20 165 14 S255 6 315 14 S345 20 360 16" stroke="#f4813a" stroke-width=".8" fill="none" opacity=".5"/></svg></div>
+</div>
+
+<div id="mural-section" style="max-width:1100px;margin:0 auto;padding:0 14px;">
+  <div class="stats">
+    <div class="stat"><div class="stat-n" id="stat-count">0</div><div class="stat-l">مشارك</div></div>
+    <div class="stat"><div class="stat-n" id="stat-drawn">0</div><div class="stat-l">رسمة بالإيد</div></div>
+    <div class="stat"><div class="stat-n" id="stat-likes">0</div><div class="stat-l">تفاعل</div></div>
+  </div>
+  <!-- GOAL BAR -->
+  <div class="goal-wrap">
+    <div class="goal-label">🎯 هدفنا <b>100</b> بصمة هذا الصيف — <span id="goal-pct">0%</span> تحقّق!</div>
+    <div class="goal-track"><div class="goal-fill" id="goal-fill" style="width:0%"></div></div>
+    <div class="goal-sub"><span id="goal-done">0</span> من 100 أمنية</div>
+  </div>
+  <div class="mhdr" style="margin-top:16px;">
+    <h2>🎨 جدارية أفق — صيف 2026</h2>
+  </div>
+  <div class="horizon"></div>
+</div>
+
+<div class="chips-outer">
+  <div class="chips">
+    <button class="chip on" onclick="doFilter('all',this)">✨ الكل</button>
+    <button class="chip" onclick="doFilter('سفر',this)">✈️ سفر</button>
+    <button class="chip" onclick="doFilter('راحة',this)">😌 راحة</button>
+    <button class="chip" onclick="doFilter('مغامرة',this)">🏕️ مغامرة</button>
+    <button class="chip" onclick="doFilter('تطوير',this)">📚 تطوير</button>
+    <button class="chip" onclick="doFilter('عائلة',this)">❤️ عائلة</button>
+    <button class="chip" onclick="doFilter('ترفيه',this)">🎉 ترفيه</button>
+  </div>
+</div>
+
+<div class="padlet-outer">
+  <div class="padlet-grid" id="grid">
+    <div class="loading" style="grid-column:1/-1">
+      <div class="spinner"></div>
+      <p>جاري تحميل الجدارية...</p>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<button class="fab" onclick="openModal()">🌴 أضف بصمتك</button>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal-bg" onclick="handleBg(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="mtabs">
+      <button class="mtab active" onclick="mTab('upload',this)">📁 رفع</button>
+      <button class="mtab" onclick="mTab('camera',this)">📷 كاميرا</button>
+      <button class="mtab" onclick="mTab('draw',this)">🎨 رسم</button>
+    </div>
+
+    <!-- UPLOAD -->
+    <div id="mp-upload">
+      <div class="fg"><label>اسمك أو لقبك *</label><input type="text" id="up-name" placeholder="مثلاً: رند، أبو فهد ..." maxlength="40"></div>
+      <div class="fg">
+        <div class="dz" id="dz"><input type="file" id="fi" accept="image/*">
+          <p>🖼️<br><strong>اسحب أو انقر</strong><br>لرفع صورة</p></div>
+        <div id="pv-wrap"><img id="pv-img" alt=""><button class="rm-btn" onclick="rmUp()">✕</button></div>
+      </div>
+      <div class="fg"><label>عبارة تُطبع على الصورة (اختياري)</label><input type="text" id="up-txt" placeholder="مثلاً: صيف الذكريات 🌴" maxlength="55"></div>
+      <div class="fg"><label>أمنيتك للإجازة *</label><textarea id="up-wish" rows="2" placeholder="اكتب أمنيتك ..." maxlength="180"></textarea></div>
+      <div class="fg"><label>نوع الإجازة</label>
+        <select id="up-type"><option value="سفر">✈️ سفر</option><option value="راحة">😌 راحة</option><option value="مغامرة">🏕️ مغامرة</option><option value="تطوير">📚 تطوير</option><option value="عائلة">❤️ عائلة</option><option value="ترفيه">🎉 ترفيه</option></select>
+      </div>
+      <button class="bsubmit" id="btn-up" onclick="doSubmit('upload')">🌴 أضف بصمتك</button>
+    </div>
+
+    <!-- CAMERA -->
+    <div id="mp-camera" style="display:none">
+      <div class="fg"><label>اسمك أو لقبك *</label><input type="text" id="cam-name" placeholder="مثلاً: رند، أبو فهد ..." maxlength="40"></div>
+      <div class="cam-wrap">
+        <video id="cam-video" autoplay playsinline muted></video>
+        <canvas id="cam-canvas" style="display:none"></canvas>
+        <img id="cam-snap" alt="">
+        <div id="cam-overlay"><p>📷 انقر "تشغيل"</p></div>
+      </div>
+      <div class="cam-ctrls">
+        <button class="cbtn p" id="btn-start" onclick="startCam()">📷 تشغيل</button>
+        <button class="cbtn p" id="btn-cap" onclick="capPhoto()" style="display:none">📸 التقط</button>
+        <button class="cbtn s" id="btn-retake" onclick="retake()" style="display:none">🔄 أعد</button>
+        <button class="cbtn s" id="btn-flip" onclick="flipCam()" style="display:none">🔃 قلب</button>
+      </div>
+      <div class="fg" style="margin-top:11px"><label>عبارة تُطبع على الصورة (اختياري)</label><input type="text" id="cam-txt" placeholder="مثلاً: شوفوا شكلي 😄" maxlength="55"></div>
+      <div class="fg"><label>أمنيتك للإجازة *</label><textarea id="cam-wish" rows="2" placeholder="اكتب أمنيتك ..." maxlength="180"></textarea></div>
+      <div class="fg"><label>نوع الإجازة</label>
+        <select id="cam-type"><option value="سفر">✈️ سفر</option><option value="راحة">😌 راحة</option><option value="مغامرة">🏕️ مغامرة</option><option value="تطوير">📚 تطوير</option><option value="عائلة">❤️ عائلة</option><option value="ترفيه">🎉 ترفيه</option></select>
+      </div>
+      <button class="bsubmit" id="btn-cam" onclick="doSubmit('camera')">🌴 أضف بصمتك</button>
+    </div>
+
+    <!-- DRAW -->
+    <div id="mp-draw" style="display:none">
+      <div class="fg"><label>اسمك أو لقبك *</label><input type="text" id="dr-name" placeholder="مثلاً: رند، أبو فهد ..." maxlength="40"></div>
+      <div class="ctoolbar">
+        <button class="tbtn on" id="tpen" onclick="setTool('pen')">✏️ قلم</button>
+        <button class="tbtn" id="teras" onclick="setTool('eraser')">🧹 ممحاة</button>
+        <button class="sbtn on" onclick="setSz(3,this)">S</button>
+        <button class="sbtn" onclick="setSz(7,this)">M</button>
+        <button class="sbtn" onclick="setSz(14,this)">L</button>
+        <button class="sbtn" onclick="setSz(26,this)">XL</button>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px;">
+        <button class="colorbtn on" style="background:#1a1a1a" onclick="setClr('#1a1a1a',this)"></button>
+        <button class="colorbtn" style="background:#fff;border-color:rgba(255,255,255,.4)" onclick="setClr('#fff',this)"></button>
+        <button class="colorbtn" style="background:#c1440e" onclick="setClr('#c1440e',this)"></button>
+        <button class="colorbtn" style="background:#f4813a" onclick="setClr('#f4813a',this)"></button>
+        <button class="colorbtn" style="background:#f9c76b" onclick="setClr('#f9c76b',this)"></button>
+        <button class="colorbtn" style="background:#10b981" onclick="setClr('#10b981',this)"></button>
+        <button class="colorbtn" style="background:#1a6fa8" onclick="setClr('#1a6fa8',this)"></button>
+        <button class="colorbtn" style="background:#9c27b0" onclick="setClr('#9c27b0',this)"></button>
+        <input type="color" style="width:23px;height:23px;border-radius:50%;border:2px solid rgba(255,255,255,.25);cursor:pointer;padding:0;background:transparent;" oninput="setClr(this.value,null)">
+        <button class="tbtn" onclick="setBg('#fff')">⬜</button>
+        <button class="tbtn" onclick="setBg('#fde9b0')">🟨</button>
+        <button class="tbtn" onclick="setBg('#e0f7fa')">🟦</button>
+      </div>
+      <div class="canvas-shell"><canvas id="draw-canvas"></canvas></div>
+      <div class="txt-row">
+        <input type="text" id="dr-overlay" placeholder="أضف عبارة على رسمتك ..." maxlength="60">
+        <button class="tadd" onclick="addTxt()">➕</button>
+      </div>
+      <div style="display:flex;gap:7px;margin-top:8px;">
+        <button class="tbtn" onclick="undoDr()" style="flex:1">↩️ تراجع</button>
+        <button class="tbtn" onclick="clearDr()" style="flex:1">🗑️ مسح</button>
+      </div>
+      <div class="fg" style="margin-top:13px"><label>أمنيتك للإجازة *</label><textarea id="dr-wish" rows="2" placeholder="اكتب أمنيتك ..." maxlength="180"></textarea></div>
+      <div class="fg"><label>نوع الإجازة</label>
+        <select id="dr-type"><option value="سفر">✈️ سفر</option><option value="راحة">😌 راحة</option><option value="مغامرة">🏕️ مغامرة</option><option value="تطوير">📚 تطوير</option><option value="عائلة">❤️ عائلة</option><option value="ترفيه">🎉 ترفيه</option></select>
+      </div>
+      <button class="bsubmit" id="btn-dr" onclick="doSubmit('draw')">🌴 أضف رسمتك</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, updateDoc, doc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCp-iEpUDD3o_3l5BcC6MIz-u14kB_GfaI",
+  authDomain: "amani-mural.firebaseapp.com",
+  projectId: "amani-mural",
+  storageBucket: "amani-mural.firebasestorage.app",
+  messagingSenderId: "986430949836",
+  appId: "1:986430949836:web:c7bda86b264630147bb569"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window._db = db;
+window._addDoc = addDoc;
+window._collection = collection;
+window._updateDoc = updateDoc;
+window._doc = doc;
+window._increment = increment;
+
+const PIN_COLORS=['#e53935','#f4813a','#f9c76b','#10b981','#1a6fa8','#9c27b0','#ec407a'];
+let allCards=[], filter='all';
+
+// REALTIME LISTENER
+const q = query(collection(db,'cards'), orderBy('ts','desc'));
+onSnapshot(q, snap => {
+  allCards = snap.docs.map(d=>({id:d.id,...d.data()}));
+  renderGrid();
+  updateStats();
+});
+
+function updateStats(){
+  const total=allCards.length;
+  document.getElementById('stat-count').textContent=total;
+  document.getElementById('stat-drawn').textContent=allCards.filter(c=>c.mode==='draw').length;
+  const totalReacts=allCards.reduce((s,c)=>s+(c.likes||0)+(c.stars||0)+(c.claps||0),0);
+  document.getElementById('stat-likes').textContent=totalReacts;
+  // GOAL BAR
+  const pct=Math.min(100,Math.round(total));
+  const fillW=Math.min(100,pct)+'%';
+  document.getElementById('goal-fill').style.width=fillW;
+  document.getElementById('goal-pct').textContent=pct+'%';
+  document.getElementById('goal-done').textContent=total;
+}
+
+window.renderGrid = function(){
+  const grid = document.getElementById('grid');
+  const filtered = filter==='all' ? allCards : allCards.filter(c=>c.type===filter);
+  if(!filtered.length){
+    grid.innerHTML='<div class="empty" style="grid-column:1/-1"><div style="font-size:3rem">🌅</div><p style="margin-top:10px;color:var(--muted)">🌟 كن أول من يترك بصمته — وين إجازتك؟</p></div>';
+    return;
+  }
+  const mi={upload:'📁',camera:'📷',draw:'🎨'};
+  grid.innerHTML = filtered.map((c,i)=>`
+    <div class="pcard">
+      <div class="pin" style="background:${PIN_COLORS[i%PIN_COLORS.length]}"></div>
+      <div class="mode-badge">${mi[c.mode]||'📁'}</div>
+      <img class="pcard-img" src="${c.img}" alt="" loading="lazy">
+      <div class="pcard-body">
+        <div class="pcard-name"><span class="dot"></span>${esc(c.name)}</div>
+        <p class="pcard-wish">${esc(c.wish)}</p>
+        <div class="pcard-foot">
+          <span class="pcard-tag">${c.type}</span>
+        </div>
+        <div class="react-row">
+          <button class="rbtn" onclick="doReact('${c.id}','likes',this,'on')">❤️ <span>${c.likes||0}</span></button>
+          <button class="rbtn" onclick="doReact('${c.id}','stars',this,'on-star')">🌟 <span>${c.stars||0}</span></button>
+          <button class="rbtn" onclick="doReact('${c.id}','claps',this,'on-clap')">👏 <span>${c.claps||0}</span></button>
+        </div>
+      </div>
+    </div>`).join('');
+};
+
+window.doFilter = function(f,btn){
+  filter=f;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+  renderGrid();
+};
+
+window.doReact = async function(id, field, btn, onClass){
+  if(btn.classList.contains(onClass)) return;
+  btn.classList.add(onClass);
+  const n=parseInt(btn.querySelector('span').textContent)+1;
+  btn.querySelector('span').textContent=n;
+  const upd={};upd[field]=window._increment(1);
+  await window._updateDoc(window._doc(window._db,'cards',id), upd);
+};
+
+window.saveCard = async function(data){
+  await window._addDoc(window._collection(window._db,'cards'), {
+    ...data,
+    likes:0,
+    ts: Date.now()
+  });
+};
+</script>
+
+<script>
+// MODAL
+function openModal(){document.getElementById('modal-bg').classList.add('open');document.body.style.overflow='hidden';}
+function closeModal(){document.getElementById('modal-bg').classList.remove('open');document.body.style.overflow='';stopCam();}
+function handleBg(e){if(e.target===document.getElementById('modal-bg'))closeModal();}
+function mTab(id,btn){
+  ['upload','camera','draw'].forEach(p=>document.getElementById('mp-'+p).style.display=p===id?'block':'none');
+  document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  if(id==='draw')initCanvas();
+  if(id!=='camera')stopCam();
+}
+
+// UPLOAD
+let upImg=null;
+const dz=document.getElementById('dz'),fi=document.getElementById('fi');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');if(e.dataTransfer.files[0])hFile(e.dataTransfer.files[0]);});
+fi.addEventListener('change',()=>{if(fi.files[0])hFile(fi.files[0]);});
+function hFile(f){
+  if(!f.type.startsWith('image/')){toast('❌ يرجى رفع صورة',1);return;}
+  const r=new FileReader();
+  r.onload=e=>{upImg=e.target.result;document.getElementById('pv-img').src=upImg;document.getElementById('pv-wrap').style.display='block';dz.style.display='none';};
+  r.readAsDataURL(f);
+}
+function rmUp(){upImg=null;fi.value='';document.getElementById('pv-wrap').style.display='none';dz.style.display='block';}
+
+// CAMERA
+let stream=null,facing='user',camSnap=null;
+async function startCam(){
+  try{
+    if(stream)stream.getTracks().forEach(t=>t.stop());
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:false});
+    const v=document.getElementById('cam-video');v.srcObject=stream;v.style.display='block';
+    document.getElementById('cam-snap').style.display='none';
+    document.getElementById('cam-overlay').style.display='none';
+    document.getElementById('btn-start').style.display='none';
+    document.getElementById('btn-cap').style.display='flex';
+    document.getElementById('btn-flip').style.display='flex';
+    camSnap=null;
+  }catch(e){toast('❌ تعذّر فتح الكاميرا',1);}
+}
+function capPhoto(){
+  const v=document.getElementById('cam-video'),cv=document.getElementById('cam-canvas');
+  cv.width=v.videoWidth;cv.height=v.videoHeight;
+  const c=cv.getContext('2d');c.save();c.scale(-1,1);c.drawImage(v,-cv.width,0);c.restore();
+  camSnap=cv.toDataURL('image/jpeg',.85);
+  document.getElementById('cam-snap').src=camSnap;document.getElementById('cam-snap').style.display='block';
+  document.getElementById('cam-video').style.display='none';
+  document.getElementById('btn-cap').style.display='none';document.getElementById('btn-flip').style.display='none';
+  document.getElementById('btn-retake').style.display='flex';
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
+}
+function retake(){camSnap=null;document.getElementById('cam-snap').style.display='none';document.getElementById('btn-retake').style.display='none';startCam();}
+function flipCam(){facing=facing==='user'?'environment':'user';startCam();}
+function stopCam(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}}
+
+// CANVAS
+let ctx,drawing=false,tool='pen',clr='#1a1a1a',sz=3,bg='#ffffff',undo=[],inited=false,lx,ly;
+function initCanvas(){
+  if(inited)return;
+  const cv=document.getElementById('draw-canvas');
+  const W=cv.parentElement.clientWidth||320;
+  cv.width=W;cv.height=Math.round(W*.72);cv.style.height=cv.height+'px';
+  ctx=cv.getContext('2d');ctx.fillStyle='#ffffff';ctx.fillRect(0,0,cv.width,cv.height);
+  saveU();inited=true;
+  cv.addEventListener('mousedown',e=>sd(e.offsetX,e.offsetY));
+  cv.addEventListener('mousemove',e=>{if(drawing)dr(e.offsetX,e.offsetY);});
+  cv.addEventListener('mouseup',()=>ed());cv.addEventListener('mouseleave',()=>ed());
+  cv.addEventListener('touchstart',e=>{e.preventDefault();const r=cv.getBoundingClientRect(),t=e.touches[0];sd(t.clientX-r.left,t.clientY-r.top);},{passive:false});
+  cv.addEventListener('touchmove',e=>{e.preventDefault();if(!drawing)return;const r=cv.getBoundingClientRect(),t=e.touches[0];dr(t.clientX-r.left,t.clientY-r.top);},{passive:false});
+  cv.addEventListener('touchend',()=>ed());
+}
+function sd(x,y){drawing=true;lx=x;ly=y;}
+function dr(x,y){if(!drawing||!ctx)return;ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(x,y);ctx.strokeStyle=tool==='eraser'?bg:clr;ctx.lineWidth=tool==='eraser'?sz*3:sz;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();lx=x;ly=y;}
+function ed(){if(drawing){drawing=false;saveU();}}
+function saveU(){if(!ctx)return;const cv=document.getElementById('draw-canvas');undo.push(ctx.getImageData(0,0,cv.width,cv.height));if(undo.length>30)undo.shift();}
+function undoDr(){if(undo.length<2)return;undo.pop();const cv=document.getElementById('draw-canvas');ctx.putImageData(undo[undo.length-1],0,0);}
+function clearDr(){if(!ctx)return;const cv=document.getElementById('draw-canvas');ctx.fillStyle=bg;ctx.fillRect(0,0,cv.width,cv.height);undo=[];saveU();}
+function setBg(c){bg=c;if(!ctx)return;const cv=document.getElementById('draw-canvas');const p=ctx.getImageData(0,0,cv.width,cv.height);ctx.fillStyle=c;ctx.fillRect(0,0,cv.width,cv.height);ctx.putImageData(p,0,0);}
+function setTool(t){tool=t;document.getElementById('tpen').classList.toggle('on',t==='pen');document.getElementById('teras').classList.toggle('on',t==='eraser');}
+function setClr(c,btn){clr=c;document.querySelectorAll('.colorbtn').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');if(tool==='eraser')setTool('pen');}
+function setSz(s,btn){sz=s;document.querySelectorAll('.sbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+function addTxt(){
+  const txt=document.getElementById('dr-overlay').value.trim();
+  if(!txt||!ctx){toast('✏️ اكتب عبارة أولاً',1);return;}
+  const cv=document.getElementById('draw-canvas');
+  const fs=Math.max(18,Math.round(cv.width/15));
+  ctx.save();ctx.font=`bold ${fs}px Tajawal,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.direction='rtl';
+  ctx.shadowColor='rgba(0,0,0,.55)';ctx.shadowBlur=7;ctx.fillStyle=clr;
+  ctx.fillText(txt,cv.width/2,cv.height-fs*1.5,cv.width-20);ctx.restore();saveU();
+  document.getElementById('dr-overlay').value='';toast('✅ تمت إضافة العبارة');
+}
+
+// COMPOSITE
+function compositeImg(base,txt){
+  return new Promise(r=>{
+    if(!txt.trim()){r(base);return;}
+    const img=new Image();
+    img.onload=()=>{
+      const cv=document.createElement('canvas');cv.width=img.width;cv.height=img.height;
+      const c=cv.getContext('2d');c.drawImage(img,0,0);
+      const fs=Math.max(18,Math.round(img.width/18));const bh=fs*2.6;
+      c.fillStyle='rgba(0,0,0,.5)';c.fillRect(0,img.height-bh,img.width,bh);
+      c.font=`bold ${fs}px Tajawal,sans-serif`;c.textAlign='center';c.textBaseline='middle';c.direction='rtl';
+      c.fillStyle='#fff';c.shadowColor='rgba(0,0,0,.6)';c.shadowBlur=4;
+      c.fillText(txt,img.width/2,img.height-bh/2,img.width-20);
+      r(cv.toDataURL('image/jpeg',.85));
+    };img.src=base;
+  });
+}
+
+// COMPRESS image to max ~200KB
+function compressImg(dataUrl){
+  return new Promise(r=>{
+    const img=new Image();
+    img.onload=()=>{
+      const cv=document.createElement('canvas');
+      const MAX=800;
+      let w=img.width,h=img.height;
+      if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+      if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
+      cv.width=w;cv.height=h;
+      cv.getContext('2d').drawImage(img,0,0,w,h);
+      r(cv.toDataURL('image/jpeg',.72));
+    };img.src=dataUrl;
+  });
+}
+
+// SUBMIT
+async function doSubmit(mode){
+  let name,wish,type,img,overlay='';
+  const btnId={upload:'btn-up',camera:'btn-cam',draw:'btn-dr'}[mode];
+  const btn=document.getElementById(btnId);
+
+  if(mode==='upload'){name=v('up-name');wish=v('up-wish');type=v('up-type');overlay=v('up-txt');img=upImg;}
+  else if(mode==='camera'){name=v('cam-name');wish=v('cam-wish');type=v('cam-type');overlay=v('cam-txt');img=camSnap;}
+  else{name=v('dr-name');wish=v('dr-wish');type=v('dr-type');const cv=document.getElementById('draw-canvas');img=cv?cv.toDataURL('image/png'):null;}
+
+  if(!name.trim()){toast('✏️ أدخل اسمك',1);return;}
+  if(!wish.trim()){toast('💭 شاركنا أمنيتك',1);return;}
+  if(!img){toast('🖼️ يرجى إضافة صورة أو رسمة',1);return;}
+
+  btn.disabled=true;btn.textContent='⏳ جاري الرفع...';
+  try{
+    if(overlay&&mode!=='draw') img=await compositeImg(img,overlay);
+    img=await compressImg(img);
+    await window.saveCard({name:name.trim(),wish:wish.trim(),type,img,mode});
+    resetForm(mode);closeModal();
+    toast('🎉 تمت إضافة لوحتك للجدارية!');
+    setTimeout(()=>document.querySelector('.padlet-outer').scrollIntoView({behavior:'smooth'}),400);
+  }catch(e){toast('❌ حدث خطأ — حاولي مجدداً',1);console.error(e);}
+  finally{btn.disabled=false;btn.textContent='🌴 أضف بصمتك';}
+}
+
+function v(id){return document.getElementById(id)?.value||'';}
+function resetForm(m){
+  if(m==='upload'){set('up-name','');set('up-wish','');set('up-txt','');rmUp();}
+  else if(m==='camera'){set('cam-name','');set('cam-wish','');set('cam-txt','');camSnap=null;document.getElementById('cam-snap').style.display='none';document.getElementById('cam-video').style.display='block';document.getElementById('cam-overlay').style.display='flex';document.getElementById('btn-start').style.display='flex';document.getElementById('btn-cap').style.display='none';document.getElementById('btn-retake').style.display='none';document.getElementById('btn-flip').style.display='none';}
+  else{set('dr-name','');set('dr-wish','');clearDr();}
+}
+function set(id,val){const el=document.getElementById(id);if(el)el.value=val;}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+let toastT;
+function toast(msg,err=0){
+  const t=document.getElementById('toast');t.textContent=msg;
+  t.style.background=err?'linear-gradient(135deg,#7f1d1d,#dc2626)':'linear-gradient(135deg,#c1440e,#f4813a)';
+  clearTimeout(toastT);t.classList.add('show');toastT=setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+
+</script>
+
+<!-- ADMIN -->
+<button class="adm-fab" onclick="admOpen()" title="لوحة التحكم">⚙️</button>
+
+<div class="adm-overlay" id="adm-overlay">
+  <div class="adm-top">
+    <h2>🛡️ لوحة تحكم الجدارية</h2>
+    <button class="adm-xbtn" onclick="admClose()">✕</button>
+  </div>
+  <div class="adm-body">
+    <!-- LOGIN -->
+    <div class="adm-login" id="adm-login">
+      <div class="icon">🔐</div>
+      <p>أدخلي كلمة المرور للدخول</p>
+      <input type="password" id="adm-pw" placeholder="••••••••"
+        onkeydown="if(event.key==='Enter')admCheck()">
+      <button class="adm-login-btn" onclick="admCheck()">دخول →</button>
+      <div class="adm-err" id="adm-err">❌ كلمة المرور غلط</div>
+    </div>
+    <!-- DASHBOARD -->
+    <div class="adm-dash" id="adm-dash">
+      <div class="adm-toggle">
+        <span class="adm-toggle-lbl" id="adm-toggle-lbl">✅ المشاركة مفتوحة</span>
+        <label class="sw">
+          <input type="checkbox" id="adm-sw" checked onchange="admToggle(this)">
+          <span class="sw-sl"></span>
+        </label>
+      </div>
+      <div class="adm-bar" id="adm-bar"></div>
+      <div class="adm-list" id="adm-list"></div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+const ADM_PW = 'bana2026';
+
+function admOpen(){
+  document.getElementById('adm-overlay').classList.add('show');
+  document.body.style.overflow='hidden';
+  // reset login each time
+  document.getElementById('adm-login').style.display='block';
+  document.getElementById('adm-dash').style.display='none';
+  document.getElementById('adm-pw').value='';
+  document.getElementById('adm-err').style.display='none';
+}
+
+function admClose(){
+  document.getElementById('adm-overlay').classList.remove('show');
+  document.body.style.overflow='';
+}
+
+function admCheck(){
+  const pw = document.getElementById('adm-pw').value.trim();
+  if(pw === ADM_PW){
+    document.getElementById('adm-login').style.display='none';
+    document.getElementById('adm-dash').style.display='block';
+    admRender();
+  } else {
+    document.getElementById('adm-err').style.display='block';
+    document.getElementById('adm-pw').value='';
+  }
+}
+
+async function admRender(){
+  const list = document.getElementById('adm-list');
+  const bar = document.getElementById('adm-bar');
+  list.innerHTML='<div class="adm-empty">⏳ جاري التحميل...</div>';
+
+  try{
+    const {getDocs, collection: col, query: q2, orderBy: ob} = 
+      await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    const snap = await getDocs(q2(col(window._db,'cards'), ob('ts','desc')));
+    const cards = snap.docs.map(d=>({id:d.id,...d.data()}));
+
+    bar.innerHTML = `
+      <span class="adm-stat">الكل: <b>${cards.length}</b></span>
+      <span class="adm-stat">رسومات: <b>${cards.filter(c=>c.mode==='draw').length}</b></span>
+      <span class="adm-stat">كاميرا: <b>${cards.filter(c=>c.mode==='camera').length}</b></span>
+      <span class="adm-stat">رفع: <b>${cards.filter(c=>c.mode==='upload').length}</b></span>
+    `;
+
+    if(!cards.length){
+      list.innerHTML='<div class="adm-empty">🌴 لا توجد مشاركات بعد</div>';
+      return;
+    }
+
+    const mi={upload:'📁',camera:'📷',draw:'🎨'};
+    list.innerHTML = cards.map(c=>`
+      <div class="adm-row" id="ar-${c.id}">
+        <div class="adm-row-info">
+          <div class="adm-row-name">✨ ${esc(c.name)}</div>
+          <div class="adm-row-wish">${esc(c.wish)}</div>
+          <div class="adm-row-meta">${c.type} &nbsp;•&nbsp; ${mi[c.mode]||'📁'}</div>
+        </div>
+        <button class="adm-view" onclick="admView('${c.id}')">👁️ صورة</button>
+        <button class="adm-del" onclick="admDel('${c.id}')">🗑️ حذف</button>
+      </div>
+    `).join('');
+
+  } catch(e){
+    console.error(e);
+    list.innerHTML='<div class="adm-empty">❌ خطأ في التحميل — حاولي مجدداً</div>';
+  }
+}
+
+function admView(id){
+  const c = allCards.find(x=>x.id===id);
+  if(!c) return;
+  const w = window.open('','_blank','width=480,height=420');
+  w.document.write(`<html><body style="margin:0;background:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;font-family:Tajawal,sans-serif;color:white;">
+    <img src="${c.img}" style="max-width:95%;max-height:75vh;object-fit:contain;border-radius:12px;">
+    <p style="margin-top:12px;font-size:.9rem;color:#f9c76b;">${c.name} — ${c.wish}</p>
+  </body></html>`);
+}
+
+async function admDel(id){
+  if(!confirm('حذف هذه البطاقة؟')) return;
+  try{
+    const {deleteDoc, doc: fsDoc} = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    await deleteDoc(fsDoc(window._db,'cards',id));
+    document.getElementById('ar-'+id)?.remove();
+    allCards = allCards.filter(c=>c.id!==id);
+    renderGrid();
+    admRender();
+    toast('🗑️ تم الحذف بنجاح');
+  } catch(e){
+    console.error(e);
+    toast('❌ خطأ في الحذف',1);
+  }
+}
+
+function admToggle(el){
+  const fab = document.querySelector('.fab');
+  const lbl = document.getElementById('adm-toggle-lbl');
+  if(el.checked){
+    fab.style.display='flex';
+    lbl.textContent='✅ المشاركة مفتوحة';
+    toast('✅ المشاركة مفتوحة للطلاب');
+  } else {
+    fab.style.display='none';
+    lbl.textContent='⛔ المشاركة موقوفة';
+    toast('⛔ تم إيقاف المشاركة');
+  }
+}
+</script>
+
+</body>
+</html>
